@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This template is for creating an Internet Draft using xml2rfc,
+     which is available here: http://xml.resource.org. -->
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+
+<!ENTITY RFC6891 SYSTEM "https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6891.xml">
+<!ENTITY nbsp    "&#160;">
+]>
+
+<rfc category="info" docName="draft-sonoda-dnsop-edns0-dnt-00">
+  <front>
+    <title abbrev="Abbreviated Title">The EDNS(0) DNT Option</title>
+
+    <author fullname="Manabu Sonoda" role="editor" surname="Sonoda">
+      <organization>Internet Initiative Japan Inc.</organization>
+      <address>
+        <email>manabu-s@iij.ad.jp</email>
+      </address>
+    </author>
+
+    <date day="10" month="Nov" year="2018" />
+
+    <!-- Meta-data Declarations -->
+
+    <area>Internet</area>
+
+    <workgroup>DNS PRIVate Exchange</workgroup>
+    <keyword>DNS</keyword>
+    <abstract>
+      <t>
+        This document specifies the EDNS(0) 'DNT' option, which allows
+        DNS stub resolver requests messages with logging policy.
+      </t>
+    </abstract>
+  </front>
+
+  <middle>
+    <section title="Introduction">
+      <t>
+        DNS message is personal data. Collecting it for long time can track user actions.
+        User can send a policy using Do Not Track (DNT) header in HTTP Protocol.
+        
+        This document specifies the EDNS(0) 'DNT' option, which allows
+        stub resolver a to request messages with logging policy.
+      </t>
+    </section>
+    <section title="Terminology">
+      <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+      "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+      "OPTIONAL" in this document are to be interpreted as described in
+      [RFC2119].</t>
+    </section>
+    <section title="The DNT Option">
+      <t>The EDNS(0) <xref target="RFC6891"/> specifies a mechanism to include new options in
+      DNS packets, contained in the RDATA of the OPT meta-RR.  This
+      document specifies the 'Logging' option in order to allows
+      stub resolver a to request messages with logging policy.  The 'DNT'
+      option MUST occur at most once per OPT meta-RR.
+      </t>
+      <t>
+        The figure below specifies the structure of the option in the RDATA
+        of the OPT RR:
+      </t>
+      <figure><artwork><![CDATA[
+0                       8                      16
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                  OPTION-CODE                  |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                 OPTION-LENGTH                 |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                 DNT-DENY-POLICY-BITS          |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+        ]]></artwork></figure>
+      <t>
+      The OPTION-CODE for the 'DNT' option is [[TODO-IANA]].
+      </t>
+      <t>
+      The OPTION-LENGTH for the 'DNT' option is the size 1 octect.
+      </t>
+      <t>
+        The DNT-DENY-POLICY-BITS is policy value.
+      </t>
+      <texttable>
+        <ttcol align='left' width='20%' />
+        <ttcol align='left' width='80%' />
+        <c>bit0</c><c>Deny stub resolver IP/port address logging(include edns0 client subnet)</c>
+        <c>bit1</c><c>Deny dns EDNS0 cookie logging</c>
+        <c>bit2</c><c>Deny qname logging</c>
+        <c>bit3</c><c>Deny qtype logging</c>
+      </texttable>
+    </section>
+    <section title='Usage Considerations'>
+    <t>
+       A stub resolver RECOMMENDED can select DNT policy.
+       OR RECOMMENDED set bit0 and bit0.
+    </t>
+    </section>
+    <section title="Server Considerations">
+    <t>
+       A server RECOMMENDED respect user policy when received a message with 'DNT' option. 
+    </t>
+    </section>
+    <section title='IANA Considerations'>
+    <t>
+      IANA is requested to assign an EDNS Option Code (as described in
+      Section 9 of <xref target="RFC6891"/>) for the 'DNT' option specified in this
+      document.
+    </t>
+    </section>
+    <section title='Operational Considerations'>
+    <t>
+      'DNT' option does forbid to collect messages for NOT DNS operation use.
+    </t>
+    </section>
+  </middle>
+
+  <!--  *****BACK MATTER ***** -->
+
+  <back>
+    <references title='Normative References'>
+&RFC6891;
+    </references>
+  </back>
+</rfc>
+
