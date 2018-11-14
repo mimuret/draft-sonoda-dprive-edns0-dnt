@@ -1,0 +1,168 @@
+
+
+
+
+DNS PRIVate Exchange                                         Sonoda, Ed.
+Internet-Draft                            Internet Initiative Japan Inc.
+Intended status: Informational                         November 10, 2018
+Expires: May 14, 2019
+
+
+                         The EDNS(0) DNT Option
+                    draft-sonoda-dnsop-edns0-dnt-00
+
+Abstract
+
+   This document specifies the EDNS(0) 'DNT' option, which allows DNS
+   stub resolver requests messages with logging policy.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at https://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on May 14, 2019.
+
+Copyright Notice
+
+   Copyright (c) 2018 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents
+   (https://trustee.ietf.org/license-info) in effect on the date of
+   publication of this document.  Please review these documents
+   carefully, as they describe your rights and restrictions with respect
+   to this document.  Code Components extracted from this document must
+   include Simplified BSD License text as described in Section 4.e of
+   the Trust Legal Provisions and are provided without warranty as
+   described in the Simplified BSD License.
+
+
+
+
+
+
+Sonoda                    Expires May 14, 2019                  [Page 1]
+
+Internet-Draft              Abbreviated Title              November 2018
+
+
+1.  Introduction
+
+   DNS message is personal data.  Collecting it for long time can track
+   user actions.  User can send a policy using Do Not Track (DNT) header
+   in HTTP Protocol.  This document specifies the EDNS(0) 'DNT' option,
+   which allows stub resolver a to request messages with logging policy.
+
+2.  Terminology
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+   "OPTIONAL" in this document are to be interpreted as described in
+   [RFC2119].
+
+3.  The DNT Option
+
+   The EDNS(0) [RFC6891] specifies a mechanism to include new options in
+   DNS packets, contained in the RDATA of the OPT meta-RR.  This
+   document specifies the 'Logging' option in order to allows stub
+   resolver a to request messages with logging policy.  The 'DNT' option
+   MUST occur at most once per OPT meta-RR.
+
+   The figure below specifies the structure of the option in the RDATA
+   of the OPT RR:
+
+   0                       8                      16
+   +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+   |                  OPTION-CODE                  |
+   +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+   |                 OPTION-LENGTH                 |
+   +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+   |                 DNT-DENY-POLICY-BITS          |
+   +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+
+   The OPTION-CODE for the 'DNT' option is [[TODO-IANA]].
+
+   The OPTION-LENGTH for the 'DNT' option is the size 1 octect.
+
+   The DNT-DENY-POLICY-BITS is policy value.
+
+
+
+
+
+
+
+
+
+
+
+
+Sonoda                    Expires May 14, 2019                  [Page 2]
+
+Internet-Draft              Abbreviated Title              November 2018
+
+
+   +--------------+----------------------------------------------------+
+   | bit0         | Deny stub resolver IP/port address logging(include |
+   |              | edns0 client subnet)                               |
+   |              |                                                    |
+   | bit1         | Deny dns EDNS0 cookie logging                      |
+   |              |                                                    |
+   | bit2         | Deny qname logging                                 |
+   |              |                                                    |
+   | bit3         | Deny qtype logging                                 |
+   +--------------+----------------------------------------------------+
+
+4.  Usage Considerations
+
+   A stub resolver RECOMMENDED can select DNT policy.  OR RECOMMENDED
+   set bit0 and bit0.
+
+5.  Server Considerations
+
+   A server RECOMMENDED respect user policy when received a message with
+   'DNT' option.
+
+6.  IANA Considerations
+
+   IANA is requested to assign an EDNS Option Code (as described in
+   Section 9 of [RFC6891]) for the 'DNT' option specified in this
+   document.
+
+7.  Operational Considerations
+
+   'DNT' option does forbid to collect messages for NOT DNS operation
+   use.
+
+8.  Normative References
+
+   [RFC6891]  Damas, J., Graff, M., and P. Vixie, "Extension Mechanisms
+              for DNS (EDNS(0))", STD 75, RFC 6891,
+              DOI 10.17487/RFC6891, April 2013,
+              <https://www.rfc-editor.org/info/rfc6891>.
+
+Author's Address
+
+   Manabu Sonoda (editor)
+   Internet Initiative Japan Inc.
+
+   Email: manabu-s@iij.ad.jp
+
+
+
+
+
+
+Sonoda                    Expires May 14, 2019                  [Page 3]
